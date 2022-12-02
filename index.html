@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <link rel="stylesheet" type="text/css" href="/static/style.css" />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  </head>
+  <body>
+    <h1>Flask Chatterbot Example</h1>
+    <div>
+      <div id="chatbox">
+        <p class="botText"><span>Hi! I'm Chatterbot.</span></p>
+      </div>
+      <div id="userInput">
+        <input id="textInput" type="text" name="msg" placeholder="Message" />
+        <input id="buttonInput" type="submit" value="Send" />
+      </div>
+    </div>
+    <script>
+      function getBotResponse() {
+        let rawText = document.getElementById('textInput').value
+        let userHtml = document.createElement('p');
+        userHtml.className = "userText";
+        userHtml.innerHTML = rawText;
+        document.getElementById('textInput').value = "";
+        document.getElementById('chatbox').append(userHtml);
+        document.getElementById('userInput').scrollIntoView({block: 'start', behavior: 'smooth'});
+        $.get("/get", { msg: rawText }).done(function(data) {
+          let botHtml = document.createElement('p');
+          botHtml.className = "botText";
+          botHtml.innerHTML = data;
+          document.getElementById('chatbox').append(botHtml);
+          document.getElementById('userInput').scrollIntoView({block: 'start', behavior: 'smooth'});
+        });
+      }
+      document.getElementById('textInput').onkeypress = function(e) {
+        if(e.keyCode == 13) {
+          getBotResponse();
+        }
+      };
+      document.getElementById('buttonInput').addEventListener('click', function() {
+        getBotResponse();
+      });
+    </script>
+  </body>
+</html>
